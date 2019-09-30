@@ -52,7 +52,7 @@ public class MainForm extends javax.swing.JFrame {
         covariance = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Grim Stats (BUILD 2019.09.29)");
+        setTitle("Statisthetic --- 2019.09.29");
 
         tableScrollPane.setBackground(new java.awt.Color(51, 51, 255));
         tableScrollPane.setAutoscrolls(true);
@@ -72,7 +72,6 @@ public class MainForm extends javax.swing.JFrame {
         ));
         dataTable.setGridColor(new java.awt.Color(204, 204, 204));
         dataTable.setInheritsPopupMenu(true);
-        dataTable.setMaximumSize(new java.awt.Dimension(2147483647, 16));
         tableScrollPane.setViewportView(dataTable);
 
         scrollPane.setViewportView(tableScrollPane);
