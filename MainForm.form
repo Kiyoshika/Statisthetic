@@ -56,14 +56,20 @@
                     </Property>
                     <Property name="text" type="java.lang.String" value="Correlation"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Correlation"/>
+                  </Events>
                 </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="covariance">
+                <MenuItem class="javax.swing.JMenuItem" name="varianceTest">
                   <Properties>
                     <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                      <KeyStroke key="Alt+C"/>
+                      <KeyStroke key="Ctrl+V"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="Covariance"/>
+                    <Property name="text" type="java.lang.String" value="Variance Test (Levene)"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="varianceTestActionPerformed"/>
+                  </Events>
                 </MenuItem>
               </SubComponents>
             </Menu>
@@ -74,8 +80,11 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="title" type="java.lang.String" value="Statisthetic --- 2019.09.29"/>
+    <Property name="title" type="java.lang.String" value="Statisthetic --- 2019.10.11"/>
   </Properties>
+  <AccessibilityProperties>
+    <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="MainForm"/>
+  </AccessibilityProperties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar1"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>

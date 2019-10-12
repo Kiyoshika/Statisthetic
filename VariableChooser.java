@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -22,6 +23,7 @@ public class VariableChooser extends javax.swing.JFrame {
     Vector varVec = new Vector();
     String getAnalysisType;
     
+    int variableCounter;
         
     public VariableChooser(String[] names, String analysisType) {
         initComponents();
@@ -33,6 +35,8 @@ public class VariableChooser extends javax.swing.JFrame {
         variableList.setModel(input);
         
         getAnalysisType = analysisType;
+        
+        variableCounter = 0;
 
         //Add elements to the input list
         for (int i = 0; i < names.length; i++) {
@@ -155,11 +159,16 @@ public class VariableChooser extends javax.swing.JFrame {
 
     private void AddVariable(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddVariable
   
+        if (getAnalysisType.equals("Correlation") && variableCounter == 2) {
+            JOptionPane.showMessageDialog(null, "You may only select two variables for correlation.");
+        } else {
         String selected = variableList.getSelectedValue();
         if (selected != null) {
         lmodel.addElement(selected);
         input.removeElement(selected);
         varVec.add(selected);
+        variableCounter++;
+        }
         }
     }//GEN-LAST:event_AddVariable
 
@@ -169,6 +178,7 @@ public class VariableChooser extends javax.swing.JFrame {
         lmodel.removeElement(selected);
         input.addElement(selected);
         varVec.remove(selected);
+        variableCounter--;
         }
     }//GEN-LAST:event_RemoveVariable
 

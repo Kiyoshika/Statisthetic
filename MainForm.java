@@ -49,10 +49,10 @@ public class MainForm extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         describeData = new javax.swing.JMenuItem();
         correlation = new javax.swing.JMenuItem();
-        covariance = new javax.swing.JMenuItem();
+        varianceTest = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Statisthetic --- 2019.09.29");
+        setTitle("Statisthetic --- 2019.10.11");
 
         tableScrollPane.setBackground(new java.awt.Color(51, 51, 255));
         tableScrollPane.setAutoscrolls(true);
@@ -106,11 +106,21 @@ public class MainForm extends javax.swing.JFrame {
 
         correlation.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
         correlation.setText("Correlation");
+        correlation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Correlation(evt);
+            }
+        });
         jMenu1.add(correlation);
 
-        covariance.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK));
-        covariance.setText("Covariance");
-        jMenu1.add(covariance);
+        varianceTest.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
+        varianceTest.setText("Variance Test (Levene)");
+        varianceTest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                varianceTestActionPerformed(evt);
+            }
+        });
+        jMenu1.add(varianceTest);
 
         jMenu2.add(jMenu1);
 
@@ -133,6 +143,8 @@ public class MainForm extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        getAccessibleContext().setAccessibleName("MainForm");
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -152,6 +164,30 @@ public class MainForm extends javax.swing.JFrame {
         
         VariableChooser vc = new VariableChooser(names, "Describe");
     }//GEN-LAST:event_DescribeData
+
+    private void Correlation(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Correlation
+        //populate variable list with our current variables
+        int cols = dataTable.getColumnCount();
+        String[] names = new String[cols];
+
+        for (int i = 0; i < cols; i++) {
+           names[i] = (dataTable.getColumnName(i));
+        }
+        
+        VariableChooser vc = new VariableChooser(names, "Correlation");
+    }//GEN-LAST:event_Correlation
+
+    private void varianceTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_varianceTestActionPerformed
+        //populate variable list with our current variables
+        int cols = dataTable.getColumnCount();
+        String[] names = new String[cols];
+
+        for (int i = 0; i < cols; i++) {
+           names[i] = (dataTable.getColumnName(i));
+        }
+        
+        VariableChooser vc = new VariableChooser(names, "VarianceTest");
+    }//GEN-LAST:event_varianceTestActionPerformed
 
     public void Input(String[][] data) {
        
@@ -193,7 +229,6 @@ public class MainForm extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem correlation;
-    private javax.swing.JMenuItem covariance;
     public static javax.swing.JTable dataTable;
     private javax.swing.JMenuItem describeData;
     private javax.swing.JMenu jMenu1;
@@ -203,5 +238,6 @@ public class MainForm extends javax.swing.JFrame {
     private javax.swing.JMenuItem menu_importData;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JScrollPane tableScrollPane;
+    private javax.swing.JMenuItem varianceTest;
     // End of variables declaration//GEN-END:variables
 }

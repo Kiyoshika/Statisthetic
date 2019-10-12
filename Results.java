@@ -1,4 +1,5 @@
 
+import java.awt.Color;
 import java.util.Vector;
 import javax.swing.JFrame;
 import javax.swing.JTable;
@@ -26,6 +27,9 @@ public class Results extends javax.swing.JFrame {
         DefaultTableModel dtm = new DefaultTableModel();
         resultsTable.setModel(dtm);
         
+        //different analyses
+        if (analysisType.equals("Describe")) {
+         setTitle("Describe Data");
         //Add column for variables
         dtm.addColumn("Variables");
         int vectorSize = varVec.size();
@@ -35,15 +39,65 @@ public class Results extends javax.swing.JFrame {
             dtm.setValueAt(varVec.get(i), i, 0);
         }
         
-        //different analyses
-        if (analysisType.equals("Describe")) {
             //Max, Min, Mean, Median, StDev, Variance
             dtm.addColumn("Mean"); //index 1
+            dtm.addColumn("Std Dev"); //index 2
+            dtm.addColumn("Variance"); //index 3
+            dtm.addColumn("Minimum"); //index 4
+            dtm.addColumn("1st Quart"); //index 5
+            dtm.addColumn("Median"); //index 6
+            dtm.addColumn("3rd Quart"); //index 7
+            dtm.addColumn("Maximum"); //index 8
             //get mean for each variable
             MathFunctions mf = new MathFunctions();
             for (int i = 0; i < vectorSize; i++) {
                 dtm.setValueAt(mf.Mean((String)varVec.get(i)), i, 1);
+                dtm.setValueAt(mf.StDev((String)varVec.get(i)), i, 2);
+                float sd = mf.StDev((String)varVec.get(i));
+                dtm.setValueAt(Float.toString(sd*sd), i, 3);
+                dtm.setValueAt(mf.Minimum((String)varVec.get(i)), i, 4);
+                dtm.setValueAt(mf.FirstQuart((String)varVec.get(i)), i, 5);
+                dtm.setValueAt(mf.Median((String)varVec.get(i)), i, 6);
+                dtm.setValueAt(mf.ThirdQuart((String)varVec.get(i)), i, 7);
+                dtm.setValueAt(mf.Maximum((String)varVec.get(i)), i, 8);
             }
+
+        }
+        else if (analysisType.equals("Correlation")) {
+            setTitle("Correlation");
+              //Add column for variables
+                dtm.addColumn("Variables");
+                int vectorSize = varVec.size();
+                dtm.setRowCount(vectorSize);
+
+                for (int i = 0; i < vectorSize; i++) {
+                    dtm.setValueAt(varVec.get(i), i, 0);
+                }
+                MathFunctions mf = new MathFunctions();
+                dtm.addColumn("Correlation");
+                dtm.setValueAt(mf.Correlation((String)varVec.get(0), (String)varVec.get(1)), 1, 1);
+        }
+        else if (analysisType.equals("VarianceTest")) {
+            setTitle("Levene's Variance Test");
+            //Add column for variables
+                dtm.addColumn("Variables");
+                int vectorSize = varVec.size();
+                dtm.setRowCount(vectorSize);
+
+                String[] names = new String[vectorSize];
+                for (int i = 0; i < vectorSize; i++) {
+                    dtm.setValueAt(varVec.get(i), i, 0);
+                    names[i] = (String)varVec.get(i);
+                }
+                
+                MathFunctions mf = new MathFunctions();
+                //Returns an array containing: test_statistic, df1 and df2
+                float[] testData = mf.VarianceTest(names);
+                dtm.addColumn("P-Value (Approximate)");
+                resultsTable.getColumnModel().getColumn(1).setMinWidth(150);
+                //Use test_statistic, df1 and df2 to get p-value
+                float p_value = mf.FDist(testData[0], testData[1], testData[2]);
+                dtm.setValueAt(p_value, 1, vectorSize-1);
         }
     }
 
@@ -64,6 +118,7 @@ public class Results extends javax.swing.JFrame {
         resultsTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setName("resultsFrame"); // NOI18N
 
         resultsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -79,7 +134,7 @@ public class Results extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 728, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
