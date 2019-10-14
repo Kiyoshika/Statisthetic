@@ -1,6 +1,6 @@
 # Statisthetic
 
-Last Update: 11 October 2019
+Last Update: 13 October 2019
 -----
 
 Current Features
@@ -8,14 +8,12 @@ Current Features
 * Functioning menu bar
 * Importing CSV Data
 * Descriptive statistics and correlation between two variables
-* Hypothesis testing (currently only Levene's Variance)
+* Hypothesis testing (Currently: Lilliefor's KS, ANOVA, Levene's Variance)
 
 Personal To-Do List
 -----
-* Normality testing (by Lilliefors KS-Test)
 * Plots (I imagine this is going to be difficult)
 * T-test for means
-* (one way) ANOVA (copy the code from leven's since that's an ANOVA as well)
 * Z-test for proportions
 * Chi-squared
 * Kruskal-Wallis (basically non-parametric ANOVA)
