@@ -49,7 +49,10 @@ public class MainForm extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         describeData = new javax.swing.JMenuItem();
         correlation = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
         varianceTest = new javax.swing.JMenuItem();
+        anovaTest = new javax.swing.JMenuItem();
+        normalityTest = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Statisthetic --- 2019.10.11");
@@ -113,6 +116,10 @@ public class MainForm extends javax.swing.JFrame {
         });
         jMenu1.add(correlation);
 
+        jMenu2.add(jMenu1);
+
+        jMenu3.setText("Hypothesis Testing");
+
         varianceTest.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
         varianceTest.setText("Variance Test (Levene)");
         varianceTest.addActionListener(new java.awt.event.ActionListener() {
@@ -120,9 +127,27 @@ public class MainForm extends javax.swing.JFrame {
                 varianceTestActionPerformed(evt);
             }
         });
-        jMenu1.add(varianceTest);
+        jMenu3.add(varianceTest);
 
-        jMenu2.add(jMenu1);
+        anovaTest.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+        anovaTest.setText("ANOVA");
+        anovaTest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                anovaTestActionPerformed(evt);
+            }
+        });
+        jMenu3.add(anovaTest);
+
+        normalityTest.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        normalityTest.setText("Normality Test (Lilliefor's KS)");
+        normalityTest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                normalityTestActionPerformed(evt);
+            }
+        });
+        jMenu3.add(normalityTest);
+
+        jMenu2.add(jMenu3);
 
         jMenuBar1.add(jMenu2);
 
@@ -189,6 +214,30 @@ public class MainForm extends javax.swing.JFrame {
         VariableChooser vc = new VariableChooser(names, "VarianceTest");
     }//GEN-LAST:event_varianceTestActionPerformed
 
+    private void anovaTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anovaTestActionPerformed
+        //populate variable list with our current variables
+        int cols = dataTable.getColumnCount();
+        String[] names = new String[cols];
+
+        for (int i = 0; i < cols; i++) {
+           names[i] = (dataTable.getColumnName(i));
+        }
+        
+        VariableChooser vc = new VariableChooser(names, "ANOVATest");
+    }//GEN-LAST:event_anovaTestActionPerformed
+
+    private void normalityTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_normalityTestActionPerformed
+        //populate variable list with our current variables
+        int cols = dataTable.getColumnCount();
+        String[] names = new String[cols];
+
+        for (int i = 0; i < cols; i++) {
+           names[i] = (dataTable.getColumnName(i));
+        }
+        
+        VariableChooser vc = new VariableChooser(names, "NormalityTest");
+    }//GEN-LAST:event_normalityTestActionPerformed
+
     public void Input(String[][] data) {
        
     }
@@ -228,14 +277,17 @@ public class MainForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem anovaTest;
     private javax.swing.JMenuItem correlation;
     public static javax.swing.JTable dataTable;
     private javax.swing.JMenuItem describeData;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu menu_data;
     private javax.swing.JMenuItem menu_importData;
+    private javax.swing.JMenuItem normalityTest;
     private javax.swing.JScrollPane scrollPane;
     private javax.swing.JScrollPane tableScrollPane;
     private javax.swing.JMenuItem varianceTest;

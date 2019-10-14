@@ -45,18 +45,53 @@ public class MathFunctions {
         float prior_value = 0f;
         
         //get initial value for trapezoid approximation method
-            sum += (delta/2)*Math.pow(current_value, x-1.0)*Math.pow(1-current_value,y-1.0);
-            prior_value = (float) ((delta/2)*Math.pow(current_value, x-1.0)*Math.pow(1-current_value,y-1.0));
+            //sum += (delta/2)*Math.pow(current_value, x-1.0)*Math.pow(1-current_value,y-1.0);
+            prior_value = (float) (Math.pow(current_value, x-1.0)*Math.pow(1-current_value,y-1.0));
             current_value += delta;
             
        //iterate the rest
         while (current_value < upper) {
-            sum += (delta/2)*Math.pow(current_value, x-1.0)*Math.pow(1-current_value,y-1.0);
-            prior_value = (float) ((delta/2)*Math.pow(current_value, x-1.0)*Math.pow(1-current_value,y-1.0));
+            sum += (delta)*( (Math.pow(current_value, x-1.0)*Math.pow(1-current_value,y-1.0) + prior_value) / 2);
+            prior_value = (float) (Math.pow(current_value, x-1.0)*Math.pow(1-current_value,y-1.0));
             current_value += delta;
         }
         
         return sum;
+    }
+    
+    public float ErrorFunction(float lower, float upper, float x) {
+        int observations = 100000;
+        float delta = (upper - lower) / (float)observations;
+ 
+        float sum = 0;
+        float current_value = lower;
+        float prior_value = 0f;
+        
+        //get initial value for trapezoid approximation method
+            //sum += (delta/2)*Math.pow(current_value, x-1.0)*Math.pow(1-current_value,y-1.0);
+            prior_value = (float) (Math.pow(Math.E,-1*Math.pow(current_value,2)));
+            current_value += delta;
+            
+       //iterate the rest
+        while (current_value < upper) {
+            sum += (delta)*( ((Math.pow(Math.E,-1*Math.pow(current_value,2))) + prior_value) / 2);
+            prior_value = (float) (Math.pow(Math.E, -1*Math.pow(current_value, 2)));
+            current_value += delta;
+        }
+        
+        return (float) (sum*(2/Math.sqrt(Math.PI)));
+    }
+    
+    public float CumulativeNormal(float x, float mean, float sd) {
+        float erfValue;
+        if (x - mean < 0) {
+            erfValue = ErrorFunction((x - mean) / (sd*(float)Math.sqrt(2)), 0f, x);
+        } else {
+            erfValue = ErrorFunction(0f, (x - mean) / (sd*(float)Math.sqrt(2)), x);
+        }
+        
+        //P(X <= x)
+        return (float) ((1f + erfValue) / 2f);
     }
     
     public float FDist(float test_stat, float df1, float df2) {
@@ -73,14 +108,14 @@ public class MathFunctions {
         float prior_value = 0;
         
         //get initial value for trapezoid approximation method
-            sum += (delta/2)*Math.sqrt((Math.pow(df1*current_value,df1)*Math.pow(df2,df2)) / (Math.pow(df1*current_value + df2, df1 + df2))) / (current_value*beta);
-            prior_value = (float) (delta*Math.sqrt((Math.pow(df1*current_value,df1)*Math.pow(df2,df2)) / (Math.pow(df1*current_value + df2, df1 + df2))) / (current_value*beta));
+            //sum += (delta/2)*Math.sqrt((Math.pow(df1*current_value,df1)*Math.pow(df2,df2)) / (Math.pow(df1*current_value + df2, df1 + df2))) / (current_value*beta);
+            prior_value = (float) (Math.sqrt((Math.pow(df1*current_value,df1)*Math.pow(df2,df2)) / (Math.pow(df1*current_value + df2, df1 + df2))) / (current_value*beta));
             current_value += delta;
         
         //iterate the rest
         while (current_value < upper) {
-            sum += (delta/2)*Math.sqrt((Math.pow(df1*current_value,df1)*Math.pow(df2,df2)) / (Math.pow(df1*current_value + df2, df1 + df2))) / (current_value*beta);
-            prior_value = (float) (delta*Math.sqrt((Math.pow(df1*current_value,df1)*Math.pow(df2,df2)) / (Math.pow(df1*current_value + df2, df1 + df2))) / (current_value*beta));
+            sum += (delta)*( ((Math.sqrt((Math.pow(df1*current_value,df1)*Math.pow(df2,df2)) / (Math.pow(df1*current_value + df2, df1 + df2))) / (current_value*beta)) + prior_value) / 2 );
+            prior_value = (float) (Math.sqrt((Math.pow(df1*current_value,df1)*Math.pow(df2,df2)) / (Math.pow(df1*current_value + df2, df1 + df2))) / (current_value*beta));
             current_value += delta;
             
         }
@@ -98,6 +133,12 @@ public class MathFunctions {
             }
         return sum/values.length;
 }
+    
+    public int SampleSize(String getVars) {
+        float values[] = ConvertInput(getVars);
+        
+        return values.length;
+    }
     
     private float GetMean(float[] values) {
         
@@ -440,5 +481,149 @@ public class MathFunctions {
         varData[2] = df2;
         return varData;
 }
+         
+         public float[] ANOVA(String[] getVars) {
+        String[][] data = new String[getVars.length][1];
+        
+        for (int i = 0; i < data.length; i++) {
+            data[i] = ArrayMaps.columnData.get(getVars[i]);
+        }
+        
+        float n_data[][] = new float[data.length][data[0].length-1];
+        
+        //convert data to float
+        try {
+            for (int i = 0; i < data.length; i++) {
+                for (int j = 0; j < data[0].length-1; j++) {
+                    n_data[i][j] = Float.parseFloat(data[i][j+1]);
+                }
+            }
+        } catch(Exception e) {
+            JOptionPane.showMessageDialog(null, "Some of your data may not be converted to numeric values.");
+        }
+        
+        float[] group_means = new float[n_data.length];
+      
+        for (int i = 0; i < group_means.length; i++) {
+            group_means[i] = GetMean(n_data[i]);
+        }
+        
+        //get absolute group means
+        float[] abs_group_means = new float[group_means.length];
+        for (int i = 0; i < abs_group_means.length; i++) {
+            abs_group_means[i] = GetMean(n_data[i]);
+        }
+        
+        //get absolute group total mean
+        float total_group[] = new float[n_data.length*n_data[0].length];
+        int t_ind = 0;
+        for (int i = 0; i < n_data.length; i++) {
+            for (int j = 0; j < n_data[0].length; j++) {
+                total_group[t_ind] = n_data[i][j];
+                t_ind++;
+            }
+        }
+        
+        float total_mean = GetMean(total_group);
+        
+        //k - 1 degrees of freedom
+        float df1 = (n_data.length - 1);
+        
+        //N - k degrees of freedom
+        float df2 = (n_data.length*n_data[0].length) - n_data.length;
+        
+        //Total sum of squares
+        float SST = 0;
+        for (int i = 0; i < total_group.length; i++) {
+            SST += Math.pow(total_group[i]-total_mean,2);
+        }
+        
+        //Sum of squares within groups
+        float SSW = 0;
+        for (int g = 0; g < n_data.length; g++) {
+            for (int i = 0; i < n_data[0].length; i++) {
+                SSW += Math.pow(n_data[g][i] - abs_group_means[g],2);
+            }
+        }
+        
+        //Sum of squares between groups
+        float SSB = SST - SSW;
+        
+        //return F statistic, df1 and df2
+        float varData[] = new float[3];
+        varData[0] = (SSB / df1) / (SSW / df2);
+        varData[1] = df1;
+        varData[2] = df2;
+        return varData;
+}
+         
+         public float[] NormalityTest(String[] getVars) {
+        String[][] data = new String[getVars.length][1];
+        
+        for (int i = 0; i < data.length; i++) {
+            data[i] = ArrayMaps.columnData.get(getVars[i]);
+        }
+        
+        float n_data[][] = new float[data.length][data[0].length-1];
+        
+        //convert data to float
+        try {
+            for (int i = 0; i < data.length; i++) {
+                for (int j = 0; j < data[0].length-1; j++) {
+                    n_data[i][j] = Float.parseFloat(data[i][j+1]);
+                }
+            }
+        } catch(Exception e) {
+            JOptionPane.showMessageDialog(null, "Some of your data may not be converted to numeric values.");
+        }
+
+        //Sort each data set
+        for (int i = 0; i < n_data.length; i++) {
+            //NOTE: This is independent sorting, so other columns WON'T affect others
+            Arrays.sort(n_data[i]);
+        }
+        
+        //Create empirical distribution for each data set
+        float[] empirical = new float[n_data[0].length];
+        
+        for (int i = 0; i < n_data[0].length; i++) {
+                empirical[i] = (float) (i)/n_data[0].length;
+        }
+            
+        //Get means and sd for each data set
+        float[] means = new float[n_data.length];
+        float[] sds = new float[n_data.length];
+        
+        for (int i = 0; i < data.length; i++) {
+            means[i] = GetMean(n_data[i]);
+            sds[i] = GetStDev(n_data[i]);
+        }
+        
+        //Cululative normal distribution value comparison
+        float[][] c_norm_diff = new float[n_data.length][n_data[0].length];
+        
+        for (int c = 0; c < n_data.length; c++) {
+            for (int r = 0; r < n_data[0].length; r++) {
+                if (n_data[c][r] < means[c]) {
+                    c_norm_diff[c][r] = Math.abs(empirical[r] - (1 - CumulativeNormal(n_data[c][r], means[c], sds[c])));
+                } else {
+                    c_norm_diff[c][r] = Math.abs(empirical[r] - CumulativeNormal(n_data[c][r], means[c], sds[c]));
+                }
+            }
+        }
+        
+        //Sort the difference arrays
+        for (int i = 0; i < c_norm_diff.length; i++) {
+            Arrays.sort(c_norm_diff[i]);
+        }
+        
+        //Get test statistics for each group
+        float[] group_test_stats = new float[c_norm_diff.length];
+        for (int i = 0; i < group_test_stats.length; i++) {
+            group_test_stats[i] = c_norm_diff[i][n_data[0].length-1];
+        }
+
+        return group_test_stats;
+     }
           //EOF
 }

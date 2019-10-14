@@ -23,7 +23,7 @@ public class Results extends javax.swing.JFrame {
         initComponents();
         setVisible(true);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        resultsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        resultsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         DefaultTableModel dtm = new DefaultTableModel();
         resultsTable.setModel(dtm);
         
@@ -94,10 +94,254 @@ public class Results extends javax.swing.JFrame {
                 //Returns an array containing: test_statistic, df1 and df2
                 float[] testData = mf.VarianceTest(names);
                 dtm.addColumn("P-Value (Approximate)");
-                resultsTable.getColumnModel().getColumn(1).setMinWidth(150);
                 //Use test_statistic, df1 and df2 to get p-value
                 float p_value = mf.FDist(testData[0], testData[1], testData[2]);
                 dtm.setValueAt(p_value, 1, vectorSize-1);
+        }
+        else if (analysisType.equals("ANOVATest")) {
+            setTitle("ANOVA Test");
+            //Add column for variables
+                dtm.addColumn("Variables");
+                int vectorSize = varVec.size();
+                dtm.setRowCount(vectorSize);
+
+                String[] names = new String[vectorSize];
+                for (int i = 0; i < vectorSize; i++) {
+                    dtm.setValueAt(varVec.get(i), i, 0);
+                    names[i] = (String)varVec.get(i);
+                }
+                
+                MathFunctions mf = new MathFunctions();
+                //Returns an array containing: test_statistic, df1 and df2
+                float[] testData = mf.ANOVA(names);
+                dtm.addColumn("P-Value (Approximate)");
+                //Use test_statistic, df1 and df2 to get p-value
+                float p_value = mf.FDist(testData[0], testData[1], testData[2]);
+                dtm.setValueAt(p_value, 1, vectorSize-1);
+        }
+        else if (analysisType.equals("NormalityTest")) {
+            setTitle("Normality Test (Lilliefor's KS)");
+            //Add column for variables
+                dtm.addColumn("Variables");
+                int vectorSize = varVec.size();
+                dtm.setRowCount(vectorSize);
+                
+                float critOne = 0f;
+                float critTwo = 0f;
+
+                String[] names = new String[vectorSize];
+                for (int i = 0; i < vectorSize; i++) {
+                    dtm.setValueAt(varVec.get(i), i, 0);
+                    names[i] = (String)varVec.get(i);
+                }
+                
+                MathFunctions mf = new MathFunctions();
+                //Returns an array containing: test_statistic, df1 and df2
+                float[] testStatistics = mf.NormalityTest(names);
+                dtm.addColumn("Test Statistic");
+                dtm.addColumn("Significant at 0.05");
+                dtm.addColumn("Significant at 0.01");
+                
+                int sampleSize = mf.SampleSize(names[0]);
+                //Display test statistics
+                for (int i = 0; i < testStatistics.length; i++) {
+                    dtm.setValueAt(testStatistics[i], i, 1);
+                    
+                    //get critical value from Lilliefor's table
+                    //0.05
+                    switch(sampleSize) {
+                        case 4:
+                            critOne = 0.381f;
+                            break;
+                            
+                        case 5:
+                            critOne = 0.337f;
+                            break;
+                            
+                        case 6:
+                            critOne = 0.319f;
+                            break;
+                            
+                        case 7:
+                            critOne = 0.300f;
+                            break;
+                            
+                        case 8:
+                            critOne = 0.285f;
+                            break;
+                            
+                        case 9:
+                            critOne = 0.271f;
+                            break;
+                            
+                        case 10:
+                            critOne = 0.258f;
+                            break;
+                            
+                        case 11:
+                            critOne = 0.249f;
+                            break;
+                            
+                        case 12:
+                            critOne = 0.242f;
+                            break;
+                            
+                        case 13:
+                            critOne = 0.234f;
+                            break;
+                            
+                        case 14:
+                            critOne = 0.227f;
+                            break;
+                            
+                        case 15:
+                            critOne = 0.220f;
+                            break;
+                            
+                        case 16:
+                            critOne = 0.213f;
+                            break;
+                        
+                        case 17:
+                            critOne = 0.206f;
+                            break;
+                            
+                        case 18:
+                            critOne = 0.200f;
+                            break;
+                            
+                        case 19:
+                            critOne = 0.195f;
+                            break;
+                            
+                        case 20:
+                            critOne = 0.190f;
+                            break;
+                            
+                        case 21:
+                        case 22:
+                        case 23:
+                        case 24:
+                        case 25:
+                            critOne = 0.180f;
+                            break;
+                            
+                        case 26:
+                        case 27:
+                        case 28:
+                        case 29:
+                        case 30:
+                            critOne = 0.161f;
+                            break;
+                        default:
+                            critOne = 0.886f / (float)Math.sqrt(sampleSize);
+                            break;
+                    }
+                    
+                    //0.01
+                    switch(sampleSize) {
+                        case 4:
+                            critOne = 0.417f;
+                            break;
+                            
+                        case 5:
+                            critOne = 0.405f;
+                            break;
+                            
+                        case 6:
+                            critOne = 0.364f;
+                            break;
+                            
+                        case 7:
+                            critOne = 0.348f;
+                            break;
+                            
+                        case 8:
+                            critOne = 0.331f;
+                            break;
+                            
+                        case 9:
+                            critOne = 0.311f;
+                            break;
+                            
+                        case 10:
+                            critOne = 0.294f;
+                            break;
+                            
+                        case 11:
+                            critOne = 0.284f;
+                            break;
+                            
+                        case 12:
+                            critOne = 0.275f;
+                            break;
+                            
+                        case 13:
+                            critOne = 0.268f;
+                            break;
+                            
+                        case 14:
+                            critOne = 0.261f;
+                            break;
+                            
+                        case 15:
+                            critOne = 0.257f;
+                            break;
+                            
+                        case 16:
+                            critOne = 0.250f;
+                            break;
+                        
+                        case 17:
+                            critOne = 0.245f;
+                            break;
+                            
+                        case 18:
+                            critOne = 0.239f;
+                            break;
+                            
+                        case 19:
+                            critOne = 0.235f;
+                            break;
+                            
+                        case 20:
+                            critOne = 0.231f;
+                            break;
+                            
+                        case 21:
+                        case 22:
+                        case 23:
+                        case 24:
+                        case 25:
+                            critOne = 0.203f;
+                            break;
+                            
+                        case 26:
+                        case 27:
+                        case 28:
+                        case 29:
+                        case 30:
+                            critOne = 0.187f;
+                            break;
+                        default:
+                            critOne = 1.031f / (float)Math.sqrt(sampleSize);
+                            break;
+                    }
+                    
+                    //Test 0.05 sig
+                    if (testStatistics[i] > critOne) {
+                        dtm.setValueAt("Yes", i, 2);
+                    } else {
+                        dtm.setValueAt("No", i, 2);
+                    }
+                    //Test 0.01 sig
+                    if (testStatistics[i] > critTwo) {
+                        dtm.setValueAt("Yes", i, 3);
+                    } else {
+                        dtm.setValueAt("No", i, 3);
+                    }
+                }
+                
         }
     }
 
